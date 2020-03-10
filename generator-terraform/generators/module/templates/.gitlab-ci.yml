@@ -1,0 +1,12 @@
+stages:
+  - verify
+
+before_script:
+   - docker pull ifunky/polydev
+
+validate:
+   stage: verify
+   script:
+     - docker run --user $(id -u):$(id -g) -v $(pwd):/data --env AWS_DEFAULT_REGION=eu-west-1 ifunky/polydev:latest make validate
+   tags:
+    - terraform

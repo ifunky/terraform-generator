@@ -1,0 +1,9 @@
+{
+	"name": "generator-terraform",
+	"version": "0.1.0",
+	"description": "Generate Terraform modules and root projects",
+	"dependencies": {
+		"yeoman-generator": "^4.0.2",
+		"yosay": "^2.0.2"
+	}
+}

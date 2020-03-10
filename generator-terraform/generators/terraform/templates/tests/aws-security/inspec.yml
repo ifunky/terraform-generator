@@ -1,0 +1,10 @@
+name: aws-security
+title: AWS InSpec Profile 
+summary: AWS Compliance Profile
+version: 0.1.0
+inspec_version: '>= 3.4.2'
+depends:
+  - name: inspec-aws
+    url: git@github.com:inspec/inspec-aws.git
+supports:
+  - platform: aws

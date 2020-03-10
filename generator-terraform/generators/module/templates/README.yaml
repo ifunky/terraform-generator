@@ -1,0 +1,56 @@
+---
+#
+# Run `make createdocs` to rebuild the `README.md`
+#
+
+# Name of this project
+name: <%= moduleName %>
+title: A Useful AWS Module
+
+# Build Badges
+badges:
+  - name: "Build Status"
+    image: "https://circleci.com/gh/ifunky/<%= moduleName %>.svg?style=svg"
+    url: "https://circleci.com/gh/ifunky/<%= moduleName %>"
+description: |-
+  Give a brief description about what this module does 
+
+  ## Features
+
+  ### Something 1
+
+  - I do something...
+  - And something else...
+
+  ### Something 2
+  - Creates an object over there :-)
+
+# How to use this project
+usage: |-
+  ```hcl
+  module "account" {
+    source = "git::https://github.com/ifunky/<%= moduleName %>.git?ref=master"
+
+    my_useful_thing = "${var.useful_thing}"
+
+    tags = {
+      Terraform = "true"
+    }
+  }
+  ```
+
+# Include output from terraform-module-inspect
+include:
+  - "docs/targets.md"
+  - "docs/metadata.md"
+
+# List of useful related projects/links
+related:
+  - name: "PolyDev"
+    description: "PolyDev setup guide"
+    url: "https://github.com/ifunky/polydev"
+
+references:
+  - name: "iFunky Reference Architecture"
+    description: "iFunky reference architecture, patterns and best practices"
+    url: "https://docs.ifunky.net"
