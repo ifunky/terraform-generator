@@ -1,12 +1,12 @@
 provider "aws" {
-    region              = "${var.region}"
-    allowed_account_ids = "${var.aws_account_id}"
+    region              = var.region
+    allowed_account_ids = var.aws_account_id
     assume_role {
-      role_arn     = "${var.terraform_role_arn}"
-      session_name = "terraform"
-    }  
-    version = "~> 2.16"      
+      role_arn          = var.role_arn
+      session_name      = "terraform"
+    }     
 }
+
 module "backend" {
   source         = "git::https://github.com/ifunky/terraform-aws-backend.git?ref=master"
   bucket_name    = "${var.state_bucket_name}"

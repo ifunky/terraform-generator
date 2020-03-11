@@ -1,0 +1,100 @@
+---
+#
+# Run `make createdocs` to rebuild the `README.md`
+#
+
+# Name of this project
+name: Organsation Master Account
+
+# Build Badges
+badges:
+  - name: "Build Status"
+    image: "https://github.com/ifunky/org-ifunky/badges/master/pipeline.svg"
+    url: "https://github.com/ifunky/org-ifunky/pipelines"
+
+description: |-
+ Infrastructure for the organisation master account.  This account contains the IAM users and roles.
+
+ ## Getting Started - Local Setup
+ `PolyDev` exposes the tools that can be used to define and provision AWS resources and is the recommened approach rather than installing and maintaining tools installed locally on your PC.
+  
+ Here is the list of tools we use to provision the `organisation account` infrastructure:
+ * [aws-vault](https://github.com/99designs/aws-vault)
+ * [terraform](https://www.terraform.io/)
+
+ ### Setup AWS Vault and PolyDev
+ If you haven't done so already setup your local PC with AWS Vault and PolyDev as described in the docs https://github.com/ifunky/polydev.
+ At this point you will have:
+ * AWS Vault installed with a basic profile based on your AWS username
+ * Docker and PolyDev running from your shell
+
+ ### Setup AWS Role
+  __NOTE:__ This is a one time setup required for this specific account.
+  Add an additional AWS profile in `~/.aws/config`. Make sure to change username (username) to your own.
+  ```bash
+  [profile ifunky-master-core-account]
+  source_profile=ifunky-ro
+  role_arn=arn:aws:iam::123456789:role/master_account_adminstrator
+  mfa_serial=arn:aws:iam::123456789:mfa/username
+
+  ```
+  __NOTE:__ You must have been added to the correct IAM group by an administrator which allows you to assume the role specfified in the profile
+
+  ## Console Login
+  This account contains the IAM users and Groups for the whole organisation.  Member accounts do not have any users, instead a role must be "assumed" in order to elevate permissions.
+  Login to the console here: https://682858061982.signin.aws.amazon.com/console/
+  
+  ### Switching Roles
+  The following roles are available for switching to:
+  - https://signin.aws.amazon.com/switchrole?roleName=master_account_adminstrator&account=682858061982   
+
+  ## Terraform Account Creation
+  When creating a new set of resources/accounts for the first time we do the following:
+
+  - Delete all default VPCs in every region
+  - Setup the minimal amount of infrastructure in order for the Terraform state to be initialised
+
+  To intialise the Terraform code the following must be executed from the shell in order to setup the Terraform backend make sure you have completed the following checklist:
+
+  - Updated/verified `environments/common.tf` with the relevant configuration for this account
+  - You have been granted admin rights to this account and AWS Vault has been configured correctly
+
+  **To Initialise Terraform**
+
+  - Enter the `PolyDev` shell:
+
+          $ make dockerdev
+
+  - Run the following commands 
+  
+          $ make init-proj
+      
+  After the process has successfully completed the Terraform state will be ready and you can commit/push the repo in order to use the Change Management Pipeline.
+
+    ## Destroy All Resources
+  For safety some resources can't be deleted automatically, if you really want to nuke everything manually empty the following S3 bucket: 
+  - companyname.{environment}.terraform
+  
+    From within the PolyDev shell run the following command which will prompt you for confirmation:
+
+      $ make destroy
+
+    Good bye infrastructure :-)
+
+# Include output from terraform-module-inspect
+include:
+  - "docs/targets.md"
+
+# List of useful related projects/links
+related:
+  - name: "PolyDev"
+    description: "PolyDev repo and setup guide"
+    url: "https://github.com/ifunky/polydev"
+  - name: "Core Shared Account"
+    description: "AWS Core Shared Account"
+    url: "https://github.com/ifunky/ifunky-master-core-account"
+
+references:
+  - name: "PolyDev"
+    description: "PolyDev Setup guide"
+    url: "https://github.com/ifunky/polydev"

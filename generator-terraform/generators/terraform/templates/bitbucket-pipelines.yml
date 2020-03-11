@@ -1,0 +1,32 @@
+image: <%= polydevDockerImage %>
+
+pipelines:
+  default:
+    - step:
+       name: Initialise, Validate and Plan    
+       script:
+          - export AWS_DEFAULT_REGION=eu-west-1
+          - export TERRAFORM_ENV=dev
+          - make init
+          - make validate
+          - make plan
+
+  branches:
+    master:
+    - step:
+       name: Initialise, Validate and Plan 
+       script:
+          - export AWS_DEFAULT_REGION=eu-west-1
+          - export TERRAFORM_ENV=dev
+          - make init
+          - make validate
+          - make plan 
+       artifacts:
+          - tfplan_dev 
+    - step:
+       name: Apply
+       trigger: manual
+       script:
+         - export AWS_DEFAULT_REGION=eu-west-1
+         - export TERRAFORM_ENV=dev          
+         - make apply
