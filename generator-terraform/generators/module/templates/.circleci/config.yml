@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: ifunky/polydev:latest
+      - image: <%= polydevDockerImage %>
         environment:
           AWS_DEFAULT_REGION: eu-west-1 
     

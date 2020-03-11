@@ -1,0 +1,13 @@
+image: <%= polydevDockerImage %>
+
+pipelines:
+  default:
+    - step:
+        services:
+          - docker
+        caches:
+          - docker
+        script:
+          - export AWS_DEFAULT_REGION=eu-west-1
+          - make validate
+

@@ -1,0 +1,5 @@
+{
+    "CC": ["CircleCI"],
+    "GL": ["GitLab"],
+    "BB": ["BitBuccket Pipelines"]
+}

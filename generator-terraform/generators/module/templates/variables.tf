@@ -10,8 +10,6 @@ variable "environment" {
   description = "Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT'"
 }
 
-
-
 variable "stage" {
   type        = string
   default     = ""

@@ -10,8 +10,8 @@ title: A Useful AWS Module
 # Build Badges
 badges:
   - name: "Build Status"
-    image: "https://circleci.com/gh/ifunky/<%= moduleName %>.svg?style=svg"
-    url: "https://circleci.com/gh/ifunky/<%= moduleName %>"
+    image: "<%= buildImageUrl %>"
+    url: "<%= buildStatusImageUrl %>"
 description: |-
   Give a brief description about what this module does 
 
@@ -29,9 +29,9 @@ description: |-
 usage: |-
   ```hcl
   module "account" {
-    source = "git::https://github.com/ifunky/<%= moduleName %>.git?ref=master"
+    source = "git::<%= gitCloneUrl %>?ref=master"
 
-    my_useful_thing = "${var.useful_thing}"
+    my_useful_thing = var.useful_thing
 
     tags = {
       Terraform = "true"
@@ -51,6 +51,6 @@ related:
     url: "https://github.com/ifunky/polydev"
 
 references:
-  - name: "iFunky Reference Architecture"
-    description: "iFunky reference architecture, patterns and best practices"
+  - name: "iFunky Cloud Reference Architecture"
+    description: "iFunky cloud reference architecture, patterns and best practices"
     url: "https://docs.ifunky.net"
