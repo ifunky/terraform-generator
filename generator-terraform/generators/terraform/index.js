@@ -15,13 +15,9 @@ module.exports = class extends Generator {
     this.answers = await this.prompt([
       {
         type: 'input',
-        name: 'accountName',
-        message: 'Enter the AWS account name : ',
-      },
-      {
-        type: 'input',
-        name: 'accountNumber',
-        message: 'Enter the AWS account number : ',
+        name: 'companyName',
+        message: 'Enter the company name or short code for it : ',
+        validate: input => input.length > 0
       },
       {
         type: 'list',
@@ -65,7 +61,7 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    this.destinationRoot(this.answers.repoType + "-" + this.answers.accountName);
+    this.destinationRoot(this.answers.repoType;
 
     this.fs.copyTpl(
       `${this.templatePath()}/.!(gitignorefile|gitattributesfile)*`,

@@ -16,14 +16,23 @@ module.exports = class extends Generator {
       {
         type: 'input',
         name: 'companyName',
-        message: 'Enter the company name : ',
+        message: 'Enter the company name or short code for it : ',
         validate: input => input.length > 0
       },
       {
         type: 'input',
         name: 'accountNumber',
-        message: 'Enter the AWS account number : ',
+        message: 'Enter your AWS account number : ',
         validate: input => input.length > 0
+      },
+      {
+        type: 'input',
+        name: 'repoName',
+        message: 'Enter the full repository name : ',
+        validate: input => input.length > 0,
+        default: function(answers) {
+          return `${answers.companyName}-org-master-account`;
+        },
       },
       {
         type: 'input',
@@ -56,7 +65,6 @@ module.exports = class extends Generator {
         default: function(answers) {
           return `${answers.companyName}-master-organisation-terraform`;
         },
-        store: true,
         validate: input => input.length > 0
       },      
       {
@@ -101,7 +109,7 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    this.destinationRoot(this.answers.repoType + "-" + this.answers.companyName);
+    this.destinationRoot(this.answers.repoName);
 
     this.fs.copyTpl(
       `${this.templatePath()}/.!(gitignorefile|gitattributesfile)*`,
