@@ -1,7 +1,5 @@
-aws_account_id          = ["1234567"]
-
-stage                   = "live"
+stage                   = "prod"
 
 # VPC settings
-vpc_enable_nat_gateway  = "true"
+vpc_enable_nat_gateway  = "false"
 vpc_single_nat_gateway  = "false"

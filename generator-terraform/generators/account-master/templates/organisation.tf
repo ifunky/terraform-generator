@@ -5,7 +5,6 @@ resource "aws_organizations_organization" "default" {
   aws_service_access_principals = [
     "cloudtrail.amazonaws.com",
     "sso.amazonaws.com",
-    "ds.amazonaws.com",
     "fms.amazonaws.com"
   ]
 

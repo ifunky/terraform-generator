@@ -1,6 +1,7 @@
 'use strict';
 const Generator = require('yeoman-generator');
 const yosay = require('yosay');
+var chalk = require('chalk');
 
 module.exports = class extends Generator {
   constructor(args, opts) {
@@ -21,12 +22,6 @@ module.exports = class extends Generator {
       },
       {
         type: 'input',
-        name: 'accountNumber',
-        message: 'Enter your AWS account number : ',
-        validate: input => input.length > 0
-      },
-      {
-        type: 'input',
         name: 'repoName',
         message: 'Enter the full repository name : ',
         validate: input => input.length > 0,
@@ -35,12 +30,73 @@ module.exports = class extends Generator {
         },
       },
       {
+        type: 'list',
+        name: 'sourceControlType',
+        message: 'Choose your source control provider :',
+        store: true,
+        choices: [{
+            name: 'Github.com',
+            value: 'GH'
+          },
+          {
+            name: 'BitBucket.org',
+            value: 'BB'
+          },
+          {
+            name: 'GitLab Custom',
+            value: 'GL'
+          },          
+        ]
+      },
+      {
+        when: function(props) { return (/gh|gl|bb|/i).test(props.sourceControlType); },
+        type: 'input',
+        name: 'sourceControlPrefix',
+        message: 'Enter your repo prefix i.e. https://gitserver.com/proj/group/ :',
+        store: true,
+        validate: input => input.length > 0
+      },        
+      {
+        type: 'list',
+        name: 'ciServer',
+        message: 'Choose your CI build server',
+        choices: [{
+            name: 'GitLab',
+            value: 'GL',
+            checked: true
+          },
+          {
+            name: 'BitBucket.org Pipelines',
+            value: 'BB'
+          },
+          {
+            name: 'CircleCI',
+            value: 'CC'
+          },          
+        ]
+      },          
+      {
+        type: 'input',
+        name: 'polydevDockerImage',
+        message: 'Enter the PolyDev docker registry name : ',
+        default: 'ifunky/polydev:latest',
+        store: true,
+        validate: input => input.length > 0
+      },
+      {
+        type: 'input',
+        name: 'accountNumber',
+        message: 'Enter your AWS account number : ',
+        validate: input => input.length > 0
+      },      
+      {
         type: 'input',
         name: 'region',
         message:
           'Enter the AWS region : ',
         default: 'eu-west-1',
-        store: true
+        store: true,
+        validate: input => input.length > 0       
       },      
       {
         type: 'list',
@@ -66,50 +122,54 @@ module.exports = class extends Generator {
           return `${answers.companyName}-master-organisation-terraform`;
         },
         validate: input => input.length > 0
-      },      
+      },  
       {
-        type: 'list',
-        name: 'repoType',
-        message: 'Choose repository type :',
-        choices: [{
-            name: 'Resource Account/Products/Services',
-            value: 'RES',
-            checked: true
-          },
-          {
-            name: 'Core Account',
-            value: 'COR'
-          },
-          {
-            name: 'Organisation (Master Acount)',
-            value: 'ORG'
-          },          
-        ]
-      },
+        type: 'input',
+        name: 'roleArn',
+        message: 'Role arn of the service account used for S3: ',
+        default: function(answers) {
+          return `arn:aws:iam::<%=accountNumber%>:role/service-accounts/svc-org-terraform`;
+        },
+        validate: input => input.length > 0
+      },  
       {
-        type: 'list',
-        name: 'ciServer',
-        message: 'Choose your CI build server',
-        choices: [{
-            name: 'GitLab',
-            value: 'GL',
-            checked: true
-          },
-          {
-            name: 'BitBucket.org Pipelines',
-            value: 'BB'
-          },
-          {
-            name: 'CircleCI',
-            value: 'CC'
-          },          
-        ]
-      }              
+        type: 'input',
+        name: 'roleArnTempAdmin',
+        message: 'ARN of the manually created IAM user for initialising this account : ',
+        default: function(answers) {
+          return `arn:aws:iam::<%=accountNumber%>:/temp-admin`;
+        },
+        validate: input => input.length > 0
+      }  
     ]);
   }
 
   writing() {
     this.destinationRoot(this.answers.repoName);
+
+    this.log(chalk.bold.yellow('Account:' + this.answers.accountNumber));
+    this.log(chalk.bold.yellow('State:' + this.answers.stateBucketName));
+
+    var gitCloneUrl = `${this.answers.sourceControlPrefix}${this.answers.repoName}.git`
+
+    // Get build server urls
+    var buildStatusUrl;
+    var buildStatusImageUrl;
+
+    switch(this.answers.ciServer) {
+      case "CC":
+        buildStatusUrl = `https://circleci.com/gh/ifunky/${this.answers.moduleName}`
+        buildStatusImageUrl = buildStatusUrl + ".svg?style=svg"
+        break;
+      case "BB":
+          buildStatusUrl = `${this.answers.sourceControlPrefix}/${this.answers.moduleName}/addon/pipelines/home#!/`
+          buildStatusImageUrl = `${this.answers.sourceControlPrefix}/${this.answers.moduleName}/addon/pipelines/home#!/`
+        break;  
+      case "GL":
+          buildStatusUrl = `${this.answers.sourceControlPrefix}/${this.answers.moduleName}//pipelines`
+          buildStatusImageUrl = `${this.answers.sourceControlPrefix}/${this.answers.moduleName}/master/pipeline.svg`
+        break;
+    }
 
     this.fs.copyTpl(
       `${this.templatePath()}/.!(gitignorefile|gitattributesfile)*`,
@@ -140,7 +200,8 @@ module.exports = class extends Generator {
       this.fs.copyTpl(
         this.templatePath('bitbucket-pipelines.yml'),
         this.destinationPath('bitbucket-pipelines.yml'), {
-          polydevDockerImage: this.answers.polydevDockerImage
+          polydevDockerImage: this.answers.polydevDockerImage,
+          region: this.answers.region
         }
       );
     } 
@@ -150,29 +211,20 @@ module.exports = class extends Generator {
       this.destinationPath('.tflint.hcl')
     );
 
-    this.fs.copy(
+    this.fs.copyTpl(
       this.templatePath('environment'),
       this.destinationPath('environment'), {
         accountNumber: this.answers.accountNumber,
+        region: this.answers.region,
+        companyName: this.answers.companyName,
+        stateBucketName: this.answers.stateBucketName,
+        roleArn: this.answers.roleArn,
+        roleArnTempAdmin: this.answers.roleArnTempAdmin
       }
     );
 
-    this.fs.copyTpl(
-      this.templatePath('environment/_local_override.tfvars'),
-      this.destinationPath('environment/_local_override.tfvars'), {
-        accountNumber: this.answers.accountNumber.toLowerCase(),
-      }
-    );
-
-    this.fs.copyTpl(
-      this.templatePath('environment/common.tfvars'),
-      this.destinationPath('environment/common.tfvars'), {
-        accountNumber: this.answers.accountNumber.toLowerCase(),
-        companyName: this.answers.companyName.toLowerCase(), 
-        stateBucketName: this.answers.stateBucketName, 
-        region: this.answers.region, 
-      }
-    );
+    this.log(chalk.bold.yellow('Account:' + this.answers.accountNumber));
+    this.log(chalk.bold.yellow('State:' + this.answers.stateBucketName));
 
     this.fs.copy(
       this.templatePath('scripts'),
@@ -190,8 +242,27 @@ module.exports = class extends Generator {
     );
 
     this.fs.copyTpl(
+      this.templatePath('README.yaml'),
+      this.destinationPath('README.yaml'), {
+        repoName: this.answers.repoName.toLowerCase(),
+        companyName: this.answers.companyName.toLowerCase(),         
+        gitCloneUrl: gitCloneUrl,
+        buildImageUrl: buildStatusUrl,
+        buildStatusImageUrl: buildStatusImageUrl,
+        sourceControlPrefix: this.answers.sourceControlPrefix
+      }
+    );
+
+    this.fs.copyTpl(
       `${this.templatePath()}/**/*.tf`,
-      this.destinationRoot()
+      this.destinationRoot(), {
+        repoName: this.answers.repoName.toLowerCase(),
+        companyName: this.answers.companyName.toLowerCase(),         
+        gitCloneUrl: gitCloneUrl,
+        buildImageUrl: buildStatusUrl,
+        buildStatusImageUrl: buildStatusImageUrl,
+        region: this.answers.region
+      }
     );
 
   }

@@ -22,5 +22,5 @@ yo/module: ## Run yeoman template generator to create a new Terraform module
 yo/terraform: ## Run yeoman template generator to create a new Terraform resource set (i.e. AWS account)
 	$(call yo,terraform)
 
-yo/account-master: ## Run yeoman template generator to create a new Terraform resource set (i.e. AWS account)
+yo/masteraccount: ## Run yeoman template generator to create a new master organisation account
 	$(call yo,account-master)

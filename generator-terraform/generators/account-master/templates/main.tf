@@ -42,7 +42,7 @@ locals {
 }
 
 module "backend" {
-  source               = "git::https://github.com/ifunky/terraform-aws-backend.git?ref=master"
+  source               = "git::<%=sourceControlPrefix%>terraform-aws-backend.git?ref=master"
   bucket_name          = var.state_bucket_name
   namespace            = var.company
   environment          = var.environment
@@ -51,7 +51,7 @@ module "backend" {
 }
 
 module "account" {
-  source = "git::https://github.com/ifunky/terraform-aws-baseline-account.git?ref=master"
+  source = "git::<%=sourceControlPrefix%>terraform-aws-baseline-account.git?ref=master"
 
   audit_access_logs_create = true
   namespace                = var.company
@@ -85,11 +85,10 @@ module "vpc" {
   
   enable_s3_endpoint       = true
   enable_dynamodb_endpoint = true
-
 }
 
 module "cis-baseline" {
-  source                          = "git::https://github.com/ifunky/terraform-aws-baseline-cis.git?ref=master"
+  source                          = "git::<%=sourceControlPrefix%>terraform-aws-baseline-cis.git?ref=master"
 
   vpc_log_retention_in_days       = 90
   vpc_id                          = module.vpc.vpc_id

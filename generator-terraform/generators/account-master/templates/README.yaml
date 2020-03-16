@@ -9,8 +9,8 @@ name: Organsation Master Account
 # Build Badges
 badges:
   - name: "Build Status"
-    image: "https://github.com/ifunky/org-ifunky/badges/master/pipeline.svg"
-    url: "https://github.com/ifunky/org-ifunky/pipelines"
+    image: "<%= buildImageUrl %>"
+    url: "<%= buildStatusImageUrl %>"
 
 description: |-
  Infrastructure for the organisation master account.  This account contains the IAM users and roles.
@@ -32,8 +32,8 @@ description: |-
   __NOTE:__ This is a one time setup required for this specific account.
   Add an additional AWS profile in `~/.aws/config`. Make sure to change username (username) to your own.
   ```bash
-  [profile ifunky-master-core-account]
-  source_profile=ifunky-ro
+  [profile <%=repoName %>]
+  source_profile=<%=companyName%>-ro
   role_arn=arn:aws:iam::123456789:role/master_account_adminstrator
   mfa_serial=arn:aws:iam::123456789:mfa/username
 
@@ -42,7 +42,7 @@ description: |-
 
   ## Console Login
   This account contains the IAM users and Groups for the whole organisation.  Member accounts do not have any users, instead a role must be "assumed" in order to elevate permissions.
-  Login to the console here: https://682858061982.signin.aws.amazon.com/console/
+  Login to the console here: https://12312312.signin.aws.amazon.com/console/
   
   ### Switching Roles
   The following roles are available for switching to:

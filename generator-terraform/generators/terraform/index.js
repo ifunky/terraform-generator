@@ -140,7 +140,14 @@ module.exports = class extends Generator {
 
     this.fs.copyTpl(
       `${this.templatePath()}/**/*.tf`,
-      this.destinationRoot()
+      this.destinationRoot(), {
+        repoName: this.answers.repoName.toLowerCase(),
+        companyName: this.answers.companyName.toLowerCase(),         
+        gitCloneUrl: gitCloneUrl,
+        buildImageUrl: buildStatusUrl,
+        buildStatusImageUrl: buildStatusImageUrl,
+        region: this.answers.region
+      }
     );
 
   }
