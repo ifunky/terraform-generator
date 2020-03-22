@@ -2,7 +2,7 @@ provider "aws" {
     region              = var.region
     allowed_account_ids = var.aws_account_id
     assume_role {
-      role_arn          = var.terraform_role_arn
+      role_arn          = var.role_arn
       session_name      = "terraform"
     }     
 }
@@ -33,7 +33,7 @@ locals {
 }
 
 data "aws_iam_role" "terraform" {
-  name = module.account.iam_terraform-role.name
+  name = module.account.iam_terraform_role.name
 }
 
 locals {
@@ -46,7 +46,7 @@ module "backend" {
   bucket_name          = var.state_bucket_name
   namespace            = var.company
   environment          = var.environment
-  write_access_arns    = [var.terraform_role_arn]
+  write_access_arns    = [var.role_arn]
   readonly_access_arns = [local.shared_account_role_arn]
 }
 

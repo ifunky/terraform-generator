@@ -128,7 +128,7 @@ module.exports = class extends Generator {
         name: 'roleArn',
         message: 'Role arn of the service account used for S3: ',
         default: function(answers) {
-          return `arn:aws:iam::<%=accountNumber%>:role/service-accounts/svc-org-terraform`;
+          return `arn:aws:iam::${answers.accountNumber}:role/service-accounts/svc-org-terraform`;
         },
         validate: input => input.length > 0
       },  
@@ -137,7 +137,7 @@ module.exports = class extends Generator {
         name: 'roleArnTempAdmin',
         message: 'ARN of the manually created IAM user for initialising this account : ',
         default: function(answers) {
-          return `arn:aws:iam::<%=accountNumber%>:/temp-admin`;
+          return `arn:aws:iam::${answers.accountNumber}:/temp-admin`;
         },
         validate: input => input.length > 0
       }  
@@ -227,6 +227,11 @@ module.exports = class extends Generator {
     this.log(chalk.bold.yellow('State:' + this.answers.stateBucketName));
 
     this.fs.copy(
+      this.templatePath('docs'),
+      this.destinationPath('docs')
+    );
+
+    this.fs.copy(
       this.templatePath('scripts'),
       this.destinationPath('scripts')
     );
@@ -261,7 +266,8 @@ module.exports = class extends Generator {
         gitCloneUrl: gitCloneUrl,
         buildImageUrl: buildStatusUrl,
         buildStatusImageUrl: buildStatusImageUrl,
-        region: this.answers.region
+        region: this.answers.region,
+        sourceControlPrefix: this.answers.sourceControlPrefix
       }
     );
 

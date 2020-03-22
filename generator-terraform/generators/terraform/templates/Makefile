@@ -4,15 +4,19 @@ export README_INCLUDES ?= $(file://$(shell pwd)/?type=text/plain)
 
 METADATA_DOCS_FILE := "docs/metadata.md"
 TARGETS_DOCS_FILE  := "docs/targets.md"
-WORKSPACE="${TERRAFORM_ENV}"
+
+#  Default to dev if environment not set
+WORKSPACE=${TERRAFORM_ENV}
+ifeq ($(WORKSPACE),)
+WORKSPACE := "dev"
+endif
+
 
 # Extract the AWS region from the specified environment
 AWS_REGION=${shell awk -F "=" '/region/ {print $$2}' environment/$(WORKSPACE).tfvars}
 
 # Setup environment using convention from current directory name.
-# For example a directory named "/RES-Cbpm-Base" will map to /RES-$ENVIRONMENT-$ENVIRONMENT_TYPE
-ENVIRONMENT=$(shell basename "$$PWD" | tr '[:upper:]' '[:lower:]' | cut -d "-" -f2)
-ENVIRONMENT_TYPE=$(shell basename "$$PWD" | tr '[:upper:]' '[:lower:]' | cut -d "-" -f3)
+AWS_PROFILE="$(shell basename "$$PWD")-$(WORKSPACE)"
 ENVIRONMENT_OVERRIDE_FILE=env_override.tfvars
 
 define polydev
@@ -79,13 +83,13 @@ destroy: prep ## CAUTION!!  THIS WILL  DESTROY EVERYTHING (WITH PROMPT!)
 	-var-file="environment/common.tfvars" -var-file="environment/$(WORKSPACE).tfvars" $(LOCAL_OVERRIDE)
 
 polydev: prep dockerpull ## Run docker locally to start developing with all the tools or run AWS CLI commands :-)
-	@aws-vault exec --assume-role-ttl 1h $(ENVIRONMENT)_$(ENVIRONMENT_TYPE)_$(WORKSPACE) -- \
+	@aws-vault exec --assume-role-ttl 1h $(AWS_PROFILE) -- \
 	docker run -it \
 	-e AWS_ACCESS_KEY_ID \
 	-e AWS_SECRET_ACCESS_KEY \
 	-e AWS_SESSION_TOKEN \
 	-e AWS_SECURITY_TOKEN \
-	--env AWS_DEFAULT_REGION=eu-west-2 \
+	--env AWS_DEFAULT_REGION=eu-west-1 \
 	--env TERRAFORM_ENV=${WORKSPACE} \
 	--user "$$(id -u):$$(id -g)" \
 	-v "$$PWD:/data" \

@@ -14,16 +14,16 @@ resource "aws_organizations_organization" "default" {
 
 resource "aws_organizations_organizational_unit" "core" {
   name      = "Core"
-  parent_id = "${aws_organizations_organization.default.roots.0.id}"
+  parent_id = aws_organizations_organization.default.roots.0.id
 }
 
 resource "aws_organizations_organizational_unit" "development" {
   name      = "Development"
-  parent_id = "${aws_organizations_organization.default.roots.0.id}"
+  parent_id = aws_organizations_organization.default.roots.0.id
 }
 
 resource "aws_organizations_organizational_unit" "production" {
   name      = "Production"
-  parent_id = "${aws_organizations_organization.default.roots.0.id}"
+  parent_id = aws_organizations_organization.default.roots.0.id
 }
 

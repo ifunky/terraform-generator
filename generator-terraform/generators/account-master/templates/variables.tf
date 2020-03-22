@@ -71,17 +71,17 @@ variable "vpc_cidr" {
 
 variable "vpc_availability_zones" {
     description = "VPC availability zones"
-    type        = "list"
+    type        = list
 }
 
 variable "vpc_private_subnets" {
     description = "List of private subnet IP cidr blocks for each availability zone"
-    type        = "list"
+    type        = list
 }
 
 variable "vpc_public_subnets" {
     description = "List of public subnet IP cidr blocks for each availability zone"
-    type        = "list"
+    type        = list
 }
 
 variable "vpc_enable_nat_gateway" {
