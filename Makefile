@@ -24,3 +24,6 @@ yo/terraform: ## Run yeoman template generator to create a new Terraform resourc
 
 yo/masteraccount: ## Run yeoman template generator to create a new master organisation account
 	$(call yo,account-master)
+
+yo/standalone: ## Run yeoman template generator to create a standalone AWS account with Terraform
+	$(call yo,standalone)

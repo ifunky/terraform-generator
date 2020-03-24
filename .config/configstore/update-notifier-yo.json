@@ -1,10 +1,4 @@
 {
 	"optOut": false,
-	"lastUpdateCheck": 1584369982017,
-	"update": {
-		"latest": "3.1.1",
-		"current": "3.1.0",
-		"type": "patch",
-		"name": "yo"
-	}
+	"lastUpdateCheck": 1584893749334
 }
