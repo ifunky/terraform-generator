@@ -5,7 +5,7 @@ The framework uses the popular Yeoman scaffolding tool to generate Terraform pro
 
 For more information on our cloud reference architectures and best practices see https://docs.ifunky.net
 
-## Features
+# Features
 
 ### Standard tooling
 - Built using `PolyDev` containerised tooling - no need to install multiple tools locally (see useful links below)
@@ -54,7 +54,7 @@ The Terraform Generator can be used to setup and configure AWS standalone accoun
 Navigate to the root of this repository and run the following commands:
 
     $ make polydev # This will drop you into the PolyDev tooling container shell
-    $ make yo/stalone
+    $ make yo/standalone
 
 Yeoman will prompt you for some questions in order to create a module with correct links to build badges etc.
 
