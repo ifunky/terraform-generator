@@ -81,4 +81,5 @@ The following targets are available:
 polydev                        Run docker locally to start developing with all the tools or run AWS CLI commands :-)
 yo/module                      Run yeoman template generator to create a new Terraform module
 yo/terraform                   Run yeoman template generator to create a new Terraform resource set (i.e. AWS account)
+yo/standalone                  Run yeoman template generator to create a standalone AWS account with Terraform
 ```
