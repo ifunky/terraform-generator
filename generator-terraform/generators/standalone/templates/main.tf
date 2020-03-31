@@ -39,7 +39,6 @@ data "aws_iam_role" "terraform" {
 module "backend" {
   source               = "git::<%=sourceControlPrefix%>terraform-aws-backend.git?ref=master"
   bucket_name          = var.bucket
-  state_bucket_name    = var.state_bucket_name
   namespace            = var.company
   environment          = var.environment
   write_access_arns    = [var.role_arn]
@@ -74,10 +73,24 @@ module "vpc" {
   single_nat_gateway = var.vpc_single_nat_gateway
   enable_vpn_gateway = false
 
-  manage_default_network_acl = true
-  default_network_acl_ingress = local.network_acls["default_inbound"]
-  default_network_acl_egress = local.network_acls["default_outbound"]
-  
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+  public_dedicated_network_acl  = true
+  public_inbound_acl_rules      = local.network_acls["public_inbound"]
+  public_outbound_acl_rules     = local.network_acls["public_outbound"]
+  public_subnet_tags            = {
+    Tier = "Public"
+  }
+
+  private_dedicated_network_acl = true
+  private_inbound_acl_rules     = local.network_acls["private_inbound"]
+  private_outbound_acl_rules    = local.network_acls["private_outbound"]
+  private_subnet_tags            = {
+    Tier = "Private"
+  }
+
+
   enable_s3_endpoint       = true
   enable_dynamodb_endpoint = true
 }

@@ -6,7 +6,7 @@ state_bucket_name           = "terraform"
 role_arn                    = "<%=roleArn%>"
 
 company                     = "<%=companyName%>"
-environment                 = "Organisation"
+environment                 = "root"
 
 region                      = "<%=region%>"
 cloudtrail_log_group_name   = "vpc-cloudtrail-log"
@@ -16,8 +16,12 @@ cloudtrail_bucket_name      = "<%=companyName%>-root-audit-cloudtrail-logs"
 
 kms_terraform_principles    = ["<%=roleArnTempAdmin%>"]
 
+public_key                   = "ssh-rsa AA36S8hQ== my@server"
+
 vpc_name                    = "VPC"
 vpc_cidr                    = "10.0.0.0/22"
 vpc_availability_zones      = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 vpc_private_subnets         = ["10.0.1.0/26", "10.0.1.64/26", "10.0.1.128/26"]
 vpc_public_subnets          = ["10.0.2.0/26", "10.0.2.64/26", "10.0.2.128/26"]
+vpc_private_subnets_all     = "10.0.1.0/24"
+vpc_public_subnets_all      = "10.0.2.0/24"

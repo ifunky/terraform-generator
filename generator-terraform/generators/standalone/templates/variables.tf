@@ -56,6 +56,11 @@ variable "kms_terraform_principles" {
   default     = []
 }
 
+variable "public_key" {
+    type        = string
+    description = "EC2 Key pair (public generated key)"
+}
+
 variable "vpc_name" {
     description = "Name of the VPC"
 }
@@ -79,16 +84,24 @@ variable "vpc_public_subnets" {
     type        = list
 }
 
+variable "vpc_private_subnets_all" {
+    description = "CIDR of all private subnets"
+    type        = string
+}
+
+variable "vpc_public_subnets_all" {
+    description = "CIDR of all public subnets"
+    type        = string
+}
+
+
+
 variable "vpc_enable_nat_gateway" {
     description = "Enable NAT gateway on the VPC"
 }
 
 variable "vpc_single_nat_gateway" {
     description = "Only create one NAT gateway, useful for dev environments"
-}
-
-variable "state_bucket_name" {
-    description = "Terraform state bucket name i.e terraform"
 }
 
 variable "tags" {

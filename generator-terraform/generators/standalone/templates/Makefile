@@ -137,7 +137,6 @@ init: prep ## Initialise the project
 validate: prep ## Validate Terraform code 
 	@echo Running validation on Terraform code....
 	@terraform validate \
-	-var-file="environment/common.tfvars" -var-file="environment/$(WORKSPACE).tfvars" $(LOCAL_OVERRIDE)
 	@echo Running lint checks on Terraform code....	
 	@tflint --var-file="environment/common.tfvars" --var-file="environment/$(WORKSPACE).tfvars" --aws-region=eu-west-1
 
@@ -153,7 +152,6 @@ test-infra:  ## Run Inspec infrastrucuture tests in the context of the `role_arn
 	inspec exec tests/cis-aws-foundations-baseline -t aws:// --input-file=tests/attributes.yml --reporter cli junit:testresults/aws_security.xml
 
 plan: prep validate ## Show what terraform thinks it will do
-	@date
 	@terraform workspace list
 	@terraform get -update 
 	@terraform plan \

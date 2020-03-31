@@ -1,4 +1,3 @@
-<!-- Auto generated file -->
 {{- defineDatasource "config" "README.yaml" | regexp.Replace ".*" "" -}}
 {{- defineDatasource "includes" .Env.README_INCLUDES | regexp.Replace ".*" "" }}
 
