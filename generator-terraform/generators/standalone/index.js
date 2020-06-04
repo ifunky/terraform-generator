@@ -137,7 +137,7 @@ module.exports = class extends Generator {
         name: 'roleArnTempAdmin',
         message: 'ARN of the manually created IAM user for initialising this account : ',
         default: function(answers) {
-          return `arn:aws:iam::${answers.accountNumber}:/role/temp-admin`;
+          return `arn:aws:iam::${answers.accountNumber}:role/temp-admin`;
         },
         validate: input => input.length > 0
       }  
