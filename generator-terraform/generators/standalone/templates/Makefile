@@ -124,8 +124,11 @@ init-proj: prep clean init-env-vars ## Intialise a new AWS account including S3 
 	@rm -f backend.plan $(ENVIRONMENT_OVERRIDE_FILE)
 
 init-proj-destroy: prep init-env-vars ## Destroy only resources created by the init-proj target
-	@terraform destroy -target=module.account -target=module.backend -target=module.vpc \
-	-var-file="environment/common.tfvars" -var-file="environment/$(WORKSPACE).tfvars" $(LOCAL_OVERRIDE) -var-file="$(ENVIRONMENT_OVERRIDE_FILE)"
+	@echo -e 'terraform { \n backend "local" { \n\t}\n }' > backend.tf
+	@terraform init -lock=false
+	@terraform destroy -target=module.account -target=module.vpc -target=module.backend \
+	-var-file="environment/common.tfvars" -var-file="environment/$(WORKSPACE).tfvars" $(LOCAL_OVERRIDE)
+
 
 init: prep ## Initialise the project
 	@terraform init \

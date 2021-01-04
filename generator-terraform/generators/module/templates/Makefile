@@ -6,7 +6,7 @@ TARGETS_DOCS_FILE  := "docs/targets.md"
 export README_INCLUDES ?= $(file://$(shell pwd)/?type=text/plain)
 
 define polydev
-	@docker run -it \
+	@docker run -it --rm \
 		--env AWS_DEFAULT_REGION="eu-west-1" \
 		--user "$$(id -u):$$(id -g)" \
 		-v "$$PWD:/data" \
@@ -24,6 +24,7 @@ validate: init
 	@terraform validate
 	@echo Running lint checks on Terraform code....
 	@tflint
+	@tfsec .
 
 createdocs/targets: # Create list of make targets in Markdown format
 	@echo Auto creating README.md....
@@ -56,7 +57,6 @@ createdocs/help: ## Create documentation help
 	@echo "- Alternativly from within the PolyDev shell run make createdocs"
 	@echo "- Your README.md has been created :-)"
 
-
 polydev: ## Run PolyDev interactive shell to start developing with all the tools or run AWS CLI commands :-)
 	$(call polydev)
 
@@ -64,7 +64,7 @@ polydev/help: ## Help on using PolyDev locally
 	@echo "--------------------------------------------------------------------------"
 	@echo "PolyDev Help - Running Helper Targets"
 	@echo "--------------------------------------------------------------------------"
-	@echo "Get yourself setup on PolyDev: https://www.github.com/ifunky/net/polydev" 
+	@echo "Get yourself setup on PolyDev: https://www.github.com/ifunky.net/polydev" 
 	@echo 
 	@echo " - Run make targets polydev/{target} directly from your shell "
 	@echo " - To run the PolyDev interactive shell run make polydev"
